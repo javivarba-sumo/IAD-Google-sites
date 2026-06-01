@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FY27 IAD Roadmap</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--tp:#1a1a18;--ts:#6b6b66;
+  --border:rgba(0,0,0,0.12);--curdot:#378ADD;--curtext:#185FA5;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--tp:#f0ede8;--ts:#9b9b96;
+  --border:rgba(255,255,255,0.12);
+}}
+body{font-family:var(--font);background:var(--bg);color:var(--tp);padding:24px 20px 48px;min-height:100vh}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--ts);text-transform:uppercase;margin-bottom:6px}
+h1{font-size:22px;font-weight:500;margin-bottom:6px}
+.sub{font-size:13px;color:var(--ts);margin-bottom:24px}
+.tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:.5px solid var(--border);margin-bottom:20px}
+.tab{padding:7px 13px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--ts);border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:6px;font-family:var(--font)}
+.tab:hover{color:var(--tp)}
+.tab.active{color:var(--tp);font-weight:500;border-bottom-color:var(--tp)}
+.tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sumrow{font-size:11px;color:var(--ts);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{font-size:11px;font-weight:500;color:var(--ts);padding:5px 8px 8px;text-align:left;border-bottom:.5px solid var(--border)}
+.cws{width:180px}
+.cq{width:calc((100% - 180px)/4)}
+.qcur{color:var(--curtext)!important}
+.cdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--curdot);margin-right:4px;vertical-align:middle}
+td{vertical-align:top;padding:0}
+.wscell{padding:8px 8px 2px 0;vertical-align:middle}
+.wslabel{font-size:12px;font-weight:500;color:var(--tp)}
+.rdiv td{border-top:.5px solid var(--border)}
+.sbar{position:absolute;top:0;height:22px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:11px;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+</head>
+<body>
+<div class="eyebrow">Infrastructure &amp; Data · FY27</div>
+<h1>The FY27 roadmap, one view at a time.</h1>
+<p class="sub">Start with the whole-of-IAD picture, then drill into any vertical.</p>
+<div class="tabs" id="tabs"></div>
+<div class="sumrow" id="sumrow"></div>
+<div id="gc"></div>
+
+<script>
+const C={
+  IT:              {bg:'#FFFDE7',tx:'#854F0B',dot:'#BA7517'},
+  'Solutions Engineering':{bg:'#E3F0FB',tx:'#0C447C',dot:'#378ADD'},
+  'Data Engineering':{bg:'#FFE4E6',tx:'#9B1C1C',dot:'#E24B4A'},
+  'Data Analytics': {bg:'#EEEDFE',tx:'#3C3489',dot:'#7F77DD'},
+  'Program Management':{bg:'#E8F5E2',tx:'#27500A',dot:'#639922'},
+};
+const fb={bg:'#F1EFE8',tx:'#444441',dot:'#888780'};
+
+const D={
+
+/* ══════════════════════════════════════════════════════
+   ALL IAD  — read from Image 1
+══════════════════════════════════════════════════════ */
+'All IAD':[
+ {ws:'Data Analytics',team:'Data Analytics',items:[
+  {n:'Workstream Enablement',           s:1,e:1},
+  {n:'DBX Foundation Building',         s:1,e:1},
+  {n:'Jira Refinement',                 s:1,e:1},
+  {n:'Looker Foundation Building',      s:1,e:2},
+  {n:'Data Definitions',                s:1,e:2},
+  {n:'Department Foundation Building',  s:2,e:3},
+  {n:'Maintenance & Upgrades',          s:4,e:4},
+ ]},
+ {ws:'Data Engineering',team:'Data Engineering',items:[
+  {n:'Workstream Enablement',           s:1,e:1},
+  {n:'Jira Refinement',                 s:1,e:1},
+  {n:'DBX Foundations Building',        s:1,e:2},
+  {n:'DBX Feature Solutions',           s:1,e:3},
+  {n:'Platform Centralization',         s:2,e:4},
+  {n:'Data Pre-Processing',             s:3,e:4},
+  {n:'Maintenance & Upgrades',          s:4,e:4},
+ ]},
+ {ws:'Solutions Engineering',team:'Solutions Engineering',items:[
+  {n:'Jira Refinement',                 s:1,e:1},
+  {n:'IAD Sovereign Cloud',             s:1,e:1},
+  {n:'Sumo Logic AI Implementation',    s:2,e:4},
+  {n:'Internal Solutions',              s:2,e:4},
+  {n:'Network Solutions',               s:2,e:3},
+  {n:'Corporate Solutions',             s:3,e:4},
+  {n:'Cloud Modernization',             s:4,e:4},
+  {n:'Maintenance & Upgrades',          s:4,e:4},
+ ]},
+ {ws:'IT',team:'IT',items:[
+  {n:'Jira Enhancement',                s:1,e:2},
+  {n:'MDM Enhancement',                 s:2,e:3},
+  {n:'AWS Marketplace',                 s:2,e:3},
+  {n:'Internal Solutions',              s:2,e:3},
+  {n:'Branch Office & Network Support', s:2,e:4},
+ ]},
+ {ws:'Program Management',team:'Program Management',items:[
+  {n:'Jira Refinement',                 s:1,e:1},
+  {n:'Program Management',              s:2,e:4},
+  {n:'Documentation',                   s:2,e:4},
+  {n:'Department Support',              s:2,e:4},
+  {n:'External Engagement',             s:2,e:4},
+ ]},
+],
+
+/* ══════════════════════════════════════════════════════
+   IT  — read from Image 2
+══════════════════════════════════════════════════════ */
+'IT':[
+ {ws:'Branch Office & End User Support',items:[
+  {n:'FY27 Support',                              s:3,e:4},
+  {n:'On-Premise Network Enhancements',           s:3,e:3},
+  {n:'Noida, India Branch Office Setup',          s:4,e:4},
+ ]},
+ {ws:'Internal Solutions',items:[
+  {n:'Azure Cleanup',                             s:1,e:1},
+  {n:'GCP Cleanup',                               s:1,e:1},
+  {n:'Migrate Asset Management to Jira',          s:2,e:3},
+  {n:'Sumo Logic Implementation',                 s:3,e:3},
+  {n:'Google Workspace Refinement',               s:3,e:3},
+  {n:'IT Workflow Automation',                    s:3,e:4},
+ ]},
+ {ws:'Jira Refinement',items:[
+  {n:'IT Jira Refinement',                        s:1,e:1},
+  {n:'Jira Standardization',                      s:4,e:4},
+  {n:'Jira Project Cleanup',                      s:4,e:4},
+  {n:'Jira Configuration Refinement',             s:4,e:4},
+  {n:'Service Portal Refinement',                 s:4,e:4},
+ ]},
+ {ws:'AWS Marketplace',items:[
+  {n:'ESC Marketplace Setup and Configuration',   s:2,e:2},
+  {n:'Commercial Marketplace Refinement',         s:4,e:4},
+ ]},
+ {ws:'MDM Enhancement',items:[
+  {n:'Kandji Cleanup',                            s:2,e:2},
+  {n:'JAMF Enhancements',                         s:2,e:2},
+ ]},
+],
+
+/* ══════════════════════════════════════════════════════
+   SOLUTIONS ENGINEERING  — read from Image 3
+══════════════════════════════════════════════════════ */
+'Solutions Engineering':[
+ {ws:'Cloud Modernization',items:[
+  {n:'AWS Commercial Account Mgmt - IAA-1065 (Phase 2)', s:4,e:4},
+ ]},
+ {ws:'Internal Solutions',items:[
+  {n:'Okta Refinement',                           s:2,e:2},
+  {n:'PagerDuty Implementation',                  s:4,e:4},
+ ]},
+ {ws:'Network & Corporate Solutions',items:[
+  {n:'HR Data Validation Impl - IAA-2128',        s:2,e:2},
+  {n:'Netskope Implementation - IAA-2211',        s:2,e:2},
+ ]},
+ {ws:'IAD Sovereign Cloud',items:[
+  {n:'ESC IAD Build - IAA-1880',                  s:1,e:1},
+ ]},
+ {ws:'Internal Refinement',items:[
+  {n:'Jira Refinement',                           s:1,e:1},
+  {n:'Annual Code & Solution Updates',            s:4,e:4},
+ ]},
+ {ws:'Sumo Logic AI Implementation',items:[
+  {n:'Gemini for GWS Enablement - IAA-2217',      s:1,e:2},
+  {n:'Boomi Implementation - IAA-2216',           s:2,e:2},
+  {n:'Claude Co-Work / Code',                     s:2,e:3},
+  {n:'MCP Gateway',                               s:3,e:3},
+  {n:'User Lifecycle Automation',                 s:4,e:4},
+ ]},
+],
+
+/* ══════════════════════════════════════════════════════
+   DATA ENGINEERING  — read from Image 4
+══════════════════════════════════════════════════════ */
+'Data Engineering':[
+ {ws:'DBX Foundations Building',items:[
+  {n:'Taxonomies and Field Definition',           s:1,e:2},
+  {n:'Department-Specific Dimension',             s:1,e:2},
+  {n:'Department-Specific Catalogs',              s:1,e:2},
+  {n:'Source Ingestion',                          s:1,e:1},
+  {n:'DBX Cube Enhancements',                     s:2,e:2},
+  {n:'DBX Cubes Dimensions',                      s:2,e:2},
+  {n:'DBX Assets Bundle',                         s:2,e:2},
+ ]},
+ {ws:'Data Pre-Processing',items:[
+  {n:'Model Building Refinement',                 s:3,e:3},
+  {n:'Contextualization Enhancements',            s:4,e:4},
+ ]},
+ {ws:'DBX Feature Solutions',items:[
+  {n:'Agent Bricks Implementation',               s:1,e:2},
+  {n:'Data Quality Monitoring',                   s:2,e:2},
+  {n:'DBX Metrics Store Implementation',          s:2,e:2},
+  {n:'Clean Rooms Implementation',                s:3,e:3},
+ ]},
+ {ws:'Platform Centralization',items:[
+  {n:'Big Query Migration',                       s:2,e:2},
+  {n:'Redshift Decommission',                     s:2,e:3},
+  {n:'FED Databricks Implementation',             s:4,e:4},
+  {n:'ESC Databricks Implementation',             s:4,e:4},
+ ]},
+ {ws:'Internal Refinement',items:[
+  {n:'Jira Refinement',                           s:1,e:1},
+  {n:'Annual Code & Solution Updates',            s:4,e:4},
+ ]},
+ {ws:'Workstream Establishment',items:[
+  {n:'Executive Analytics',                       s:1,e:1},
+  {n:'Self-serve Analytics',                      s:1,e:1},
+ ]},
+],
+
+/* ══════════════════════════════════════════════════════
+   DATA ANALYTICS  — read from Image 5
+══════════════════════════════════════════════════════ */
+'Data Analytics':[
+ {ws:'DBX Foundations Building',items:[
+  {n:'Strategic Looker Visualization',            s:1,e:1},
+  {n:'Early ELT Insights',                        s:1,e:1},
+ ]},
+ {ws:'Data Definitions',items:[
+  {n:'Taxonomies and Field Definition',           s:1,e:1},
+  {n:"KPI's Definitions",                         s:2,e:2},
+  {n:'Metrics Definition',                        s:2,e:2},
+ ]},
+ {ws:'Looker Foundation Building',items:[
+  {n:'Looker Board Core Implementation',          s:1,e:1},
+  {n:'Looker Migration and Code Refinement',      s:2,e:3},
+ ]},
+ {ws:'Department Foundation Building',items:[
+  {n:'HR Core Visualizations',                    s:2,e:2},
+  {n:'Finance Core Visualizations',               s:2,e:2},
+  {n:'Sales Core Visualizations',                 s:2,e:2},
+  {n:'Customer Core Visualizations',              s:2,e:2},
+  {n:'Marketing Core Visualizations',             s:2,e:2},
+  {n:'Engineering Core Visualizations',           s:2,e:2},
+  {n:'IAD Core Visualizations',                   s:3,e:3},
+  {n:'SRE Core Visualizations',                   s:3,e:3},
+ ]},
+ {ws:'Internal Refinement',items:[
+  {n:'Jira Refinement',                           s:1,e:1},
+  {n:'Annual Code & Solution Updates',            s:4,e:4},
+ ]},
+ {ws:'Workstream Enablement',items:[
+  {n:'Executive Analytics',                       s:1,e:1},
+  {n:'Self-serve Analytics',                      s:1,e:1},
+ ]},
+],
+
+/* ══════════════════════════════════════════════════════
+   PROGRAM MANAGEMENT  — placeholder, PM coming later
+══════════════════════════════════════════════════════ */
+'Program Management':[
+ {ws:'Program Management',items:[
+  {n:'FY27 Roadmap',                              s:1,e:1},
+  {n:'FY27 Organizational Monthly Report',        s:1,e:1},
+  {n:'FY27 KPI & Metrics Tracking',               s:2,e:2},
+  {n:'FY27 Renewal Planning',                     s:2,e:2},
+  {n:'FY27 Budget Utilization',                   s:2,e:4},
+  {n:'FY27 Department Charters',                  s:2,e:4},
+  {n:'FY27 Organization Charter',                 s:2,e:4},
+ ]},
+ {ws:'Engagement',items:[
+  {n:'FY27 Organization Website',                 s:2,e:4},
+  {n:'FY27 Stakeholder Alignment',                s:2,e:4},
+ ]},
+ {ws:'Jira Refinement',items:[
+  {n:'Organizational Jira Management',            s:1,e:1},
+  {n:'PM (IAD) Jira Refinement',                  s:1,e:1},
+ ]},
+ {ws:'Documentation',items:[
+  {n:'FY27 Process Documentation',                s:2,e:4},
+  {n:'FY27 Runbook Documentation',                s:2,e:4},
+  {n:'FY27 Policy Documentation',                 s:2,e:4},
+ ]},
+],
+
+};
+
+const TABS=['All IAD','IT','Solutions Engineering','Data Engineering','Data Analytics','Program Management'];
+let active='All IAD';
+function col(t){return(t&&C[t])||fb}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map(t=>{
+    const c=col(t==='All IAD'?null:t);
+    return`<button class="tab${t===active?' active':''}" onclick="sw('${t.replace(/'/g,"\\'")}')">
+      <span class="tdot" style="background:${t==='All IAD'?'#888':c.dot}"></span>${t}</button>`;
+  }).join('');
+}
+
+function render(){
+  const ws=D[active];
+  const tot=ws.reduce((s,w)=>s+w.items.length,0);
+  document.getElementById('sumrow').textContent=`${ws.length} workstreams · ${tot} initiatives`;
+  let rows='';
+  ws.forEach((w,wi)=>{
+    const team=w.team||(active==='All IAD'?null:active);
+    const c=col(team);
+    rows+=`<tr class="${wi>0?'rdiv':''}">
+      <td class="wscell"><span class="wslabel">${w.ws}</span></td>
+      <td colspan="4" style="padding:6px 0 2px"></td></tr>`;
+    w.items.forEach(item=>{
+      rows+=`<tr><td></td>
+        <td colspan="4" style="position:relative;height:26px;padding:2px 0">
+          <span class="sbar" data-s="${item.s}" data-e="${item.e}"
+            style="background:${c.bg};color:${c.tx}">${item.n}</span>
+        </td></tr>`;
+    });
+    rows+=`<tr><td colspan="5" style="height:4px"></td></tr>`;
+  });
+  document.getElementById('gc').innerHTML=`<table id="gtbl">
+    <thead><tr>
+      <th class="cws"></th>
+      <th class="cq qcur"><span class="cdot"></span>FY27 Q1</th>
+      <th class="cq">FY27 Q2</th>
+      <th class="cq">FY27 Q3</th>
+      <th class="cq">FY27 Q4</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+  positionBars();
+}
+
+function positionBars(){
+  const tbl=document.getElementById('gtbl');
+  if(!tbl)return;
+  const ths=tbl.querySelectorAll('th');
+  if(ths.length<5)return;
+  const qW=ths[1].offsetWidth;
+  if(!qW)return;
+  document.querySelectorAll('#gc .sbar[data-s]').forEach(bar=>{
+    const s=parseInt(bar.dataset.s),e=parseInt(bar.dataset.e);
+    bar.style.left=((s-1)*qW)+'px';
+    bar.style.width=((e-s+1)*qW-4)+'px';
+  });
+}
+
+function sw(t){active=t;renderTabs();render();}
+window.addEventListener('resize',positionBars);
+renderTabs();render();
+</script>
+</body>
+</html>
