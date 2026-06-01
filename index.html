@@ -10,6 +10,7 @@
   --bg:#ffffff;--tp:#1a1a18;--ts:#6b6b66;
   --border:rgba(0,0,0,0.12);--curdot:#378ADD;--curtext:#185FA5;
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --today-line:#5A9E6F;
 }
 @media(prefers-color-scheme:dark){:root{
   --bg:#1c1c1a;--tp:#f0ede8;--ts:#9b9b96;
@@ -25,6 +26,8 @@ h1{font-size:22px;font-weight:500;margin-bottom:6px}
 .tab.active{color:var(--tp);font-weight:500;border-bottom-color:var(--tp)}
 .tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .sumrow{font-size:11px;color:var(--ts);margin-bottom:10px}
+/* gantt wrapper — relative so the today line can be absolute inside */
+#gantt-wrap{position:relative}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 th{font-size:11px;font-weight:500;color:var(--ts);padding:5px 8px 8px;text-align:left;border-bottom:.5px solid var(--border)}
 .cws{width:180px}
@@ -36,6 +39,15 @@ td{vertical-align:top;padding:0}
 .wslabel{font-size:12px;font-weight:500;color:var(--tp)}
 .rdiv td{border-top:.5px solid var(--border)}
 .sbar{position:absolute;top:0;height:22px;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:11px;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Today marker */
+#today-marker{
+  position:absolute;
+  top:0;bottom:0;
+  width:0;
+  border-left:2px dashed var(--today-line);
+  pointer-events:none;
+  z-index:10;
+}
 </style>
 </head>
 <body>
@@ -44,7 +56,10 @@ td{vertical-align:top;padding:0}
 <p class="sub">Start with the whole-of-IAD picture, then drill into any vertical.</p>
 <div class="tabs" id="tabs"></div>
 <div class="sumrow" id="sumrow"></div>
-<div id="gc"></div>
+<div id="gantt-wrap">
+  <div id="today-marker"></div>
+  <div id="gc"></div>
+</div>
 
 <script>
 const C={
@@ -56,10 +71,19 @@ const C={
 };
 const fb={bg:'#F1EFE8',tx:'#444441',dot:'#888780'};
 
+/* ─── TODAY MARKER CONFIG ───────────────────────────────────────
+   markerQuarter : which quarter (1–4) the line lives in
+   markerPos     : 0.0 = start of quarter, 0.5 = middle, 1.0 = end
+   Update these two values each quarter.
+   Current: middle of Q2 → quarter=2, pos=0.5
+──────────────────────────────────────────────────────────────── */
+const markerQuarter = 2;
+const markerPos     = 0.5;
+
 const D={
 
 /* ══════════════════════════════════════════════════════
-   ALL IAD  — read from Image 1
+   ALL IAD
 ══════════════════════════════════════════════════════ */
 'All IAD':[
  {ws:'Data Analytics',team:'Data Analytics',items:[
@@ -68,7 +92,7 @@ const D={
   {n:'Jira Refinement',                 s:1,e:1},
   {n:'Looker Foundation Building',      s:1,e:2},
   {n:'Data Definitions',                s:1,e:2},
-  {n:'Department Foundation Building',  s:2,e:3},
+  {n:'Department Foundation Building',  s:1,e:3},
   {n:'Maintenance & Upgrades',          s:4,e:4},
  ]},
  {ws:'Data Engineering',team:'Data Engineering',items:[
@@ -82,9 +106,9 @@ const D={
  ]},
  {ws:'Solutions Engineering',team:'Solutions Engineering',items:[
   {n:'Jira Refinement',                 s:1,e:1},
-  {n:'IAD Sovereign Cloud',             s:1,e:1},
-  {n:'Sumo Logic AI Implementation',    s:2,e:4},
-  {n:'Internal Solutions',              s:2,e:4},
+  {n:'IAD Sovereign Cloud',             s:1,e:2},
+  {n:'Sumo Logic AI Implementation',    s:1,e:4},
+  {n:'Internal Solutions',              s:2,e:3},
   {n:'Network Solutions',               s:2,e:3},
   {n:'Corporate Solutions',             s:3,e:4},
   {n:'Cloud Modernization',             s:4,e:4},
@@ -94,24 +118,24 @@ const D={
   {n:'Jira Enhancement',                s:1,e:2},
   {n:'MDM Enhancement',                 s:2,e:3},
   {n:'AWS Marketplace',                 s:2,e:3},
-  {n:'Internal Solutions',              s:2,e:3},
-  {n:'Branch Office & Network Support', s:2,e:4},
+  {n:'Internal Solutions',              s:1,e:4},
+  {n:'Branch Office & Network Support', s:1,e:4},
  ]},
  {ws:'Program Management',team:'Program Management',items:[
   {n:'Jira Refinement',                 s:1,e:1},
-  {n:'Program Management',              s:2,e:4},
-  {n:'Documentation',                   s:2,e:4},
-  {n:'Department Support',              s:2,e:4},
-  {n:'External Engagement',             s:2,e:4},
+  {n:'Program Management',              s:1,e:4},
+  {n:'Documentation',                   s:1,e:4},
+  {n:'Department Support',              s:1,e:4},
+  {n:'External Engagement',             s:1,e:4},
  ]},
 ],
 
 /* ══════════════════════════════════════════════════════
-   IT  — read from Image 2
+   IT
 ══════════════════════════════════════════════════════ */
 'IT':[
  {ws:'Branch Office & End User Support',items:[
-  {n:'FY27 Support',                              s:3,e:4},
+  {n:'FY27 Support',                              s:1,e:4},
   {n:'On-Premise Network Enhancements',           s:3,e:3},
   {n:'Noida, India Branch Office Setup',          s:4,e:4},
  ]},
@@ -141,7 +165,7 @@ const D={
 ],
 
 /* ══════════════════════════════════════════════════════
-   SOLUTIONS ENGINEERING  — read from Image 3
+   SOLUTIONS ENGINEERING
 ══════════════════════════════════════════════════════ */
 'Solutions Engineering':[
  {ws:'Cloud Modernization',items:[
@@ -152,11 +176,11 @@ const D={
   {n:'PagerDuty Implementation',                  s:4,e:4},
  ]},
  {ws:'Network & Corporate Solutions',items:[
-  {n:'HR Data Validation Impl - IAA-2128',        s:2,e:2},
-  {n:'Netskope Implementation - IAA-2211',        s:2,e:2},
+  {n:'HR Data Validation Impl - IAA-2128',        s:1,e:2},
+  {n:'Netskope Implementation - IAA-2211',        s:2,e:3},
  ]},
  {ws:'IAD Sovereign Cloud',items:[
-  {n:'ESC IAD Build - IAA-1880',                  s:1,e:1},
+  {n:'ESC IAD Build - IAA-1880',                  s:1,e:2},
  ]},
  {ws:'Internal Refinement',items:[
   {n:'Jira Refinement',                           s:1,e:1},
@@ -164,7 +188,7 @@ const D={
  ]},
  {ws:'Sumo Logic AI Implementation',items:[
   {n:'Gemini for GWS Enablement - IAA-2217',      s:1,e:2},
-  {n:'Boomi Implementation - IAA-2216',           s:2,e:2},
+  {n:'Boomi Implementation - IAA-2216',           s:1,e:2},
   {n:'Claude Co-Work / Code',                     s:2,e:3},
   {n:'MCP Gateway',                               s:3,e:3},
   {n:'User Lifecycle Automation',                 s:4,e:4},
@@ -172,7 +196,7 @@ const D={
 ],
 
 /* ══════════════════════════════════════════════════════
-   DATA ENGINEERING  — read from Image 4
+   DATA ENGINEERING  — no changes
 ══════════════════════════════════════════════════════ */
 'Data Engineering':[
  {ws:'DBX Foundations Building',items:[
@@ -211,7 +235,7 @@ const D={
 ],
 
 /* ══════════════════════════════════════════════════════
-   DATA ANALYTICS  — read from Image 5
+   DATA ANALYTICS  — no changes
 ══════════════════════════════════════════════════════ */
 'Data Analytics':[
  {ws:'DBX Foundations Building',items:[
@@ -248,7 +272,7 @@ const D={
 ],
 
 /* ══════════════════════════════════════════════════════
-   PROGRAM MANAGEMENT  — placeholder, PM coming later
+   PROGRAM MANAGEMENT
 ══════════════════════════════════════════════════════ */
 'Program Management':[
  {ws:'Program Management',items:[
@@ -257,21 +281,21 @@ const D={
   {n:'FY27 KPI & Metrics Tracking',               s:2,e:2},
   {n:'FY27 Renewal Planning',                     s:2,e:2},
   {n:'FY27 Budget Utilization',                   s:2,e:4},
-  {n:'FY27 Department Charters',                  s:2,e:4},
-  {n:'FY27 Organization Charter',                 s:2,e:4},
+  {n:'FY27 Department Charters',                  s:1,e:4},
+  {n:'FY27 Organization Charter',                 s:1,e:4},
  ]},
  {ws:'Engagement',items:[
   {n:'FY27 Organization Website',                 s:2,e:4},
-  {n:'FY27 Stakeholder Alignment',                s:2,e:4},
+  {n:'FY27 Stakeholder Alignment',                s:1,e:4},
  ]},
  {ws:'Jira Refinement',items:[
   {n:'Organizational Jira Management',            s:1,e:1},
   {n:'PM (IAD) Jira Refinement',                  s:1,e:1},
  ]},
  {ws:'Documentation',items:[
-  {n:'FY27 Process Documentation',                s:2,e:4},
-  {n:'FY27 Runbook Documentation',                s:2,e:4},
-  {n:'FY27 Policy Documentation',                 s:2,e:4},
+  {n:'FY27 Process Documentation',                s:1,e:4},
+  {n:'FY27 Runbook Documentation',                s:1,e:4},
+  {n:'FY27 Policy Documentation',                 s:1,e:4},
  ]},
 ],
 
@@ -318,6 +342,7 @@ function render(){
       <th class="cq">FY27 Q4</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
   positionBars();
+  positionTodayMarker();
 }
 
 function positionBars(){
@@ -334,8 +359,25 @@ function positionBars(){
   });
 }
 
+function positionTodayMarker(){
+  const tbl=document.getElementById('gtbl');
+  const marker=document.getElementById('today-marker');
+  if(!tbl||!marker)return;
+  const ths=tbl.querySelectorAll('th');
+  if(ths.length<5)return;
+  const wsW=ths[0].offsetWidth;
+  const qW=ths[1].offsetWidth;
+  if(!qW)return;
+  // left edge of the gantt area + offset into the target quarter
+  const left=wsW + (markerQuarter-1)*qW + markerPos*qW;
+  marker.style.left=left+'px';
+  // top: start just below the th row
+  const theadH=tbl.querySelector('thead').offsetHeight;
+  marker.style.top=theadH+'px';
+}
+
 function sw(t){active=t;renderTabs();render();}
-window.addEventListener('resize',positionBars);
+window.addEventListener('resize',()=>{positionBars();positionTodayMarker();});
 renderTabs();render();
 </script>
 </body>
