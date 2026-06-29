@@ -323,23 +323,23 @@ function render(){
     const c=col(team);
     rows+=`<tr class="${wi>0?'rdiv':''}">
       <td class="wscell"><span class="wslabel">${w.ws}</span></td>
-      <td colspan="4" style="padding:6px 0 2px"></td></tr>`;
+      <td colspan="4" style="padding:6px 0 2px;background:linear-gradient(to right, transparent 25%, rgba(0,0,0,0.028) 25%, rgba(0,0,0,0.028) 50%, transparent 50%, transparent 75%, rgba(0,0,0,0.028) 75%)"></td></tr>`;
     w.items.forEach(item=>{
       rows+=`<tr><td></td>
-        <td colspan="4" style="position:relative;height:26px;padding:2px 0">
+        <td colspan="4" style="position:relative;height:26px;padding:2px 0;background:linear-gradient(to right, transparent 25%, rgba(0,0,0,0.028) 25%, rgba(0,0,0,0.028) 50%, transparent 50%, transparent 75%, rgba(0,0,0,0.028) 75%)">
           <span class="sbar" data-s="${item.s}" data-e="${item.e}"
             style="background:${c.bg};color:${c.tx}">${item.n}</span>
         </td></tr>`;
     });
-    rows+=`<tr><td colspan="5" style="height:4px"></td></tr>`;
+    rows+=`<tr><td></td><td colspan="4" style="height:4px;background:linear-gradient(to right, transparent 25%, rgba(0,0,0,0.028) 25%, rgba(0,0,0,0.028) 50%, transparent 50%, transparent 75%, rgba(0,0,0,0.028) 75%)"></td></tr>`;
   });
   document.getElementById('gc').innerHTML=`<table id="gtbl">
     <thead><tr>
       <th class="cws"></th>
-      <th class="cq qcur"><span class="cdot"></span>FY27 Q1</th>
-      <th class="cq">FY27 Q2</th>
-      <th class="cq">FY27 Q3</th>
-      <th class="cq">FY27 Q4</th>
+      <th class="cq q1 qcur"><span class="cdot"></span>FY27 Q1</th>
+      <th class="cq q2">FY27 Q2</th>
+      <th class="cq q3">FY27 Q3</th>
+      <th class="cq q4">FY27 Q4</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
   positionBars();
   positionTodayMarker();
